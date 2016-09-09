@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>用户列表</title>
+	<script src="http://ss.ufubank.com/framecore/jquery-2.1.1.min.js"></script>
+	<script src="https://s2.ufubank.com/framecore/layer/layer.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+
+<div style='width:800px;margin:50px auto;'>
+	
+	<a href="../"><button type="button" class="btn btn-success">添加用户</button></a>
+	
+	<table class="table table-striped">
+	    <caption>用户列表</caption>
+	    <thead>
+	        <tr>
+	            <th>ID</th>
+	            <th>NAME</th>
+	            <th>PASSWORD</th>
+	            <th>操作</th>
+	        </tr>
+	    </thead>
+	    <tbody>
+	    	#foreach($user in $list)
+	        <tr>
+	            <td width='60'>$user.id</td>
+				<td width='60'>$user.name</td>
+				<td width='200'>$user.password</td>
+				<td width='60'><a id="$user.id" class="J_delete" href="javascript:;">删除</a> | <a id="$user.id" class="J_edit" href="javascript:;">编辑</a></td>
+	        </tr>
+	        #end
+	    </tbody>
+	</table> 
+	
+	
+	<div>LIST数据：<small>${list}</small></div>
+</div>
+
+
+
+<script type="text/javascript">
+	function action(id,url,action) {
+		var id;
+		var url;
+		var action;
+
+		$.ajax({
+			//提交数据的类型 POST GET
+			type : "POST",
+			//提交的网址
+			url : url,
+			//提交的数据
+			data : {
+				id : id
+			},
+			//返回数据的格式
+			datatype : "text",//"xml", "html", "script", "json", "jsonp", "text".
+			//在请求之前调用的函数
+			//beforeSend:function(){$("#msg").html("logining");},
+			//成功返回之后调用的函数
+			success : function(data) {
+				if(action=='delete'){
+					layer.msg(data);
+					$('#'+id).parents('tr').remove();
+				}
+			},
+			//调用出错执行的函数
+			error : function() {
+				//请求出错处理
+			}
+		});
+
+	}
+
+	$(document).ready(function() {
+
+		$("body").on('click','a.J_delete',function() {
+			var _thisid = $(this).attr('id');
+			
+			action(_thisid,'deleteUser.do','delete');
+		});
+
+
+		$("body").on('click','a.J_edit',function() {
+			var _thisid = $(this).attr('id');
+			location.href='getUserName.do?id='+_thisid;
+		});
+
+
+
+	});
+</script>
+</body>
+</html>
