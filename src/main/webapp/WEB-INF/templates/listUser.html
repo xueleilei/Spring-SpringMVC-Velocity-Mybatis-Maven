@@ -7,15 +7,30 @@
 	<script src="https://s2.ufubank.com/framecore/layer/layer.js"></script>
 	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
 
 
 <div style='width:800px;margin:50px auto;'>
+	<h3 id="search_row"></h3>
+	<div class="row">
+		<div class="col-xs-8"><input type="text" class="form-control" id='select' placeholder="请输入用户名称"></div>
+    	<div class="col-xs-4">
+    		<button type="button" class="btn btn-primary" id="J_select">查询</button>&nbsp;
+    	</div>
+	</div><br>
+	<div class="row">
+		<div class="col-xs-4"><input type="text" class="form-control" id='name' placeholder="请输入用户名"></div>
+		<div class="col-xs-4"><input type="text" class="form-control" id='password' placeholder="请输入用户密码"></div>
+    	<div class="col-xs-4">
+    		<button id="adduser" type="button" class="btn btn-success">添加</button>
+    	</div>
+	</div><br>
+
 	
-	<a href="../"><button type="button" class="btn btn-success">添加用户</button></a>
 	
-	<table class="table table-striped">
+	<table class="table table-striped" style='border:1px solid #ddd;'>
 	    <caption>用户列表</caption>
 	    <thead>
 	        <tr>
@@ -25,13 +40,16 @@
 	            <th>操作</th>
 	        </tr>
 	    </thead>
-	    <tbody>
+	    <tbody class='list'>
 	    	#foreach($user in $list)
 	        <tr>
 	            <td width='60'>$user.id</td>
 				<td width='60'>$user.name</td>
 				<td width='200'>$user.password</td>
-				<td width='60'><a id="$user.id" class="J_delete" href="javascript:;">删除</a> | <a id="$user.id" class="J_edit" href="javascript:;">编辑</a></td>
+				<td width='60'>
+					<button id="$user.id" type="button" class="btn btn-primary btn-xs J_edit">编辑</button>&nbsp;
+					<button id="$user.id" type="button" class="btn btn-danger btn-xs J_delete">删除</button>
+				</td>
 	        </tr>
 	        #end
 	    </tbody>
@@ -44,54 +62,125 @@
 
 
 <script type="text/javascript">
-	function action(id,url,action) {
-		var id;
-		var url;
-		var action;
 
-		$.ajax({
-			//提交数据的类型 POST GET
-			type : "POST",
-			//提交的网址
-			url : url,
-			//提交的数据
-			data : {
-				id : id
-			},
-			//返回数据的格式
-			datatype : "text",//"xml", "html", "script", "json", "jsonp", "text".
-			//在请求之前调用的函数
-			//beforeSend:function(){$("#msg").html("logining");},
-			//成功返回之后调用的函数
-			success : function(data) {
-				if(action=='delete'){
-					layer.msg(data);
-					$('#'+id).parents('tr').remove();
-				}
-			},
-			//调用出错执行的函数
-			error : function() {
-				//请求出错处理
-			}
-		});
 
-	}
+
 
 	$(document).ready(function() {
-
-		$("body").on('click','a.J_delete',function() {
+		
+		//根据用户名查询一个用户
+		$("button#J_select").click(function() {
+			var _thisval = $('input[id=select]').val();
+			$.ajax({
+				//提交数据的类型 POST GET
+				type : "POST",
+				//提交的网址
+				url : "getName.do",
+				//提交的数据
+				data : {
+					name : _thisval
+				},
+				//返回数据的格式
+				datatype : "text",//"xml", "html", "script", "json", "jsonp", "text".
+				//在请求之前调用的函数
+				//beforeSend:function(){$("#msg").html("logining");},
+				//成功返回之后调用的函数            
+				success : function(data) {
+					$('#search_row').html(data);
+				},
+				//调用出错执行的函数
+				error : function() {
+					//请求出错处理
+				}
+			});
+			
+		});
+		
+		//添加一个新用户
+		$("body").on('click','button#adduser',function() {
+			var _thisname = $("#name").val();
+			var _thispassword = $("#password").val();
+			
+			$.ajax({
+				//提交数据的类型 POST GET
+				type : "POST",
+				//提交的网址
+				url : "insertUser.do",
+				//提交的数据
+				data : {
+					name : _thisname,
+					password : _thispassword
+				},
+				//返回数据的格式
+				datatype : "json",//"xml", "html", "script", "json", "jsonp", "text".
+				//在请求之前调用的函数
+				//beforeSend:function(){$("#msg").html("logining");},
+				//成功返回之后调用的函数            
+				success : function(data) {
+					var obj = JSON.parse(data);
+					console.log(obj);
+					layer.msg(obj.msg);
+					if(obj.success==true){
+						layer.msg(obj.msg);
+						var html = "<tr>" +
+				            "<td width='60'>"+obj.id+"</td>" +
+							"<td width='60'>"+obj.name+"</td>" +
+							"<td width='200'>"+obj.password+"</td>" +
+							"<td width='60'>" +
+								"<button id="+obj.id+" type='button' class='btn btn-primary btn-xs J_edit'>编辑</button>&nbsp;" +
+								"<button id="+obj.id+" type='button' class='btn btn-danger btn-xs J_delete'>删除</button>" +
+							"</td>" +
+				        "</tr>";
+				        $(".list").append(html);
+					}else if(obj.success==false){
+						layer.msg(obj.msg);
+						layer.msg('0----');
+					}
+				},
+				//调用出错执行的函数
+				error : function() {
+					//请求出错处理
+					layer.msg('与服务器通信异常！');
+				}
+			});
+		});
+		
+		//删除一个用户
+		$("body").on('click','.J_delete',function() {
 			var _thisid = $(this).attr('id');
 			
-			action(_thisid,'deleteUser.do','delete');
+			$.ajax({
+				//提交数据的类型 POST GET
+				type : "POST",
+				//提交的网址
+				url : "deleteUser.do",
+				//提交的数据
+				data : {
+					id : _thisid
+				},
+				//返回数据的格式
+				datatype : "text",//"xml", "html", "script", "json", "jsonp", "text".
+				//在请求之前调用的函数
+				//beforeSend:function(){$("#msg").html("logining");},
+				//成功返回之后调用的函数
+				success : function(data) {
+					layer.msg(data);
+					$('#'+_thisid).parents('tr').remove();
+				},
+				//调用出错执行的函数
+				error : function() {
+					//请求出错处理
+				}
+			});
 		});
 
-
-		$("body").on('click','a.J_edit',function() {
+		//编辑用户
+		$("body").on('click','.J_edit',function() {
 			var _thisid = $(this).attr('id');
 			location.href='getUserName.do?id='+_thisid;
 		});
 
-
+		
 
 	});
 </script>

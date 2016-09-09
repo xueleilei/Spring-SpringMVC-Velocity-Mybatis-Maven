@@ -2,86 +2,26 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>添加用户</title>
+<title>用户管理</title>
 </head>
 <body>
 	<script src="http://ss.ufubank.com/framecore/jquery-2.1.1.min.js"></script>
 	<script src="https://s2.ufubank.com/framecore/layer/layer.js"></script>
 	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-	<script type="text/javascript">
-		function myInterval(id,url) {
-			var id;
-			var url;
-
-			$.ajax({
-				//提交数据的类型 POST GET
-				type : "POST",
-				//提交的网址
-				url : url,
-				//提交的数据
-				data : {
-					id : id
-				},
-				//返回数据的格式
-				datatype : "text",//"xml", "html", "script", "json", "jsonp", "text".
-				//在请求之前调用的函数
-				//beforeSend:function(){$("#msg").html("logining");},
-				//成功返回之后调用的函数            
-				success : function(data) {
-					$('h1').html(data);
-				},
-				//调用出错执行的函数
-				error : function() {
-					//请求出错处理
-				}
-			});
-
-		}
-
-		$(document).ready(function() {
-			
-			$("button#J_select").click(function() {
-				myInterval($('input[id=select]').val(),'userController/getUser.do');
-			});
-			
-		
-			
-			
-		});
-	</script>
-
-	
-
-
-
 	
 	
-		
+<div style='width:400px;margin:150px auto 0 auto;'>
+		<h2 align="center">用户管理</h2><br><br>
+
+	    <div class="row">
+			<div class="col-xs-12" align='right'>
+			<a href="userController/listUser.do"><button type="button" class="btn btn-info btn-block">查看所有用户</button></a>
+			</div>
+		</div>
+	</div>
+
 	
-<div style='width:500px;margin:50px auto;'>
-
-<h1></h1>
-<div class="row">
-	<div class="col-xs-8"><input type="text" class="form-control" id='select' placeholder="请输入用户ID"></div>
-    <div class="col-xs-4"><button type="button" class="btn btn-primary" id="J_select">查询</button></div>
-</div><br>
-<a href="userController/listUser.do"><button type="button" class="btn btn-success">查看所有用户</button></a><br><br><br>
-
-
-
-
-<form role="form" action="userController/insertUser.do" method="post">
-    <div class="form-group">
-        <label for="name">用户名:</label>
-        <input type="text" class="form-control" name="name" id="name" placeholder="请输入名称">
-    </div>
-    <div class="form-group">
-        <label for="name">密码: </label>
-        <input type="text" class="form-control" name="password" id="password" placeholder="请输入密码">
-    </div>
-    <button type="submit" class="btn btn-primary btn-block">提交</button>
-</form> 
 </div>
 
 

@@ -51,9 +51,9 @@ public class UserController {
 	
 	
 	// 根据ID查询用户的名称
-	@RequestMapping("/getUser")
+	@RequestMapping("/getId")
 	@ResponseBody
-	public String getUser(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String getId(HttpServletRequest request, HttpServletResponse response, Model model) {
 		String id = request.getParameter("id");
 
 		User u = userService.getUserById(id);
@@ -61,7 +61,25 @@ public class UserController {
 		try {
 			System.out.println(u.getName());
 			
-			return "你查找的用户名是："+u.getName()+",密码是："+u.getPassword();
+			return "你查找的用户名是："+u.getName()+"，密码是："+u.getPassword();
+		} catch (Exception e) {
+			return "你查找的用户不存在！";
+		}
+		
+	}
+	
+	// 根据ID查询用户的名称
+	@RequestMapping("/getName")
+	@ResponseBody
+	public String getName(HttpServletRequest request, HttpServletResponse response, Model model) {
+		String name = request.getParameter("name");
+
+		User u = userService.getUserByName(name);
+		
+		try {
+			System.out.println(u.getName());
+			
+			return "你查找的用户名是："+u.getName()+"，密码是："+u.getPassword();
 		} catch (Exception e) {
 			return "你查找的用户不存在！";
 		}
@@ -104,18 +122,19 @@ public class UserController {
 
 	// 添加一个用户
 	@RequestMapping("/insertUser")
+	@ResponseBody
 	public String insertUser(HttpServletRequest request, Model model, User user) {
-		String name = request.getParameter("name");
-		String password = request.getParameter("password");
+
 
 		try {
 			userService.insertUser(user);
-			model.addAttribute("user", "您添加的用户是：" + name + "，密码是：" + password);
+			//model.addAttribute("user", "您添加的用户是：" + name + "，密码是：" + password);
+			return "{\"success\":true,\"msg\":\"添加成功！\",\"id\":\""+user.getId()+"\",\"name\":\""+user.getName()+"\",\"password\":\""+user.getPassword()+"\"}";
 		} catch (Exception e) {
-			model.addAttribute("user", "添加失败");
+			//model.addAttribute("user", "添加失败");
+			return "{\"success\":false,\"msg\":\"添加失败！\"}";
 		}
 
-		return "showUser";
 	}
 	
 	// 更新一个用户

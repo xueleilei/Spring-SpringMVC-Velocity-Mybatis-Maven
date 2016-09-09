@@ -20,17 +20,25 @@
 		where ID = #{id,jdbcType=VARCHAR}
 	</select>
 	
+	<!-- 根据姓名查询数据 -->
+	<select id="selectByName" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from user_Info
+		where NAME = #{name,jdbcType=VARCHAR}
+	</select>
+	
 	<!-- 查询所有 -->
 	<select id="getAll" resultMap="BaseResultMap">
 		SELECT * FROM user_Info
 	</select>
 
 	<!-- 插入数据 -->
-	<insert id="insertUser">
+	<insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
 		insert into user_Info(name,password)
 		values
 		(#{name},#{password})
-
 	</insert>
 	
 	<!-- 对应userDao中的updateUser方法 -->

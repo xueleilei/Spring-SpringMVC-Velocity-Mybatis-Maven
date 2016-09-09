@@ -10,6 +10,9 @@ public interface UserServiceI {
 	//根据ID获取一个用户的姓名，
 	public User getUserById(String id);
 	
+	//根据NAME获取一个用户的姓名，
+	public User getUserByName(String name);
+	
 	//获取所有用户列表
 	public List<User> getAll();
 	

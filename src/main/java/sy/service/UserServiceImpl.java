@@ -30,6 +30,11 @@ public class UserServiceImpl implements UserServiceI {
 		return userMapper.selectByPrimaryKey(id);
 	}
 	
+	//根据ID获取一个用户的姓名 [实现方法]
+	public User getUserByName(String name) {
+		return userMapper.selectByName(name);
+	}
+	
 	//获取所有用户列表 [实现方法]
     public List<User> getAll() {
         return userMapper.getAll();
